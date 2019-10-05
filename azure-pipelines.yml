@@ -21,15 +21,15 @@ steps:
   displayName: Build
   inputs:
     command: build
-    projects: '**/*.csproj'
+    projects: 'src/**/*.csproj'
     arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: '**/*Tests/*.csproj'
+    projects: 'test/**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --logger trx'
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: $(Build.ArtifactStagingDirectory)
-    ArtifactName: 'pub-$(buildConfiguration)'
+    ArtifactName: 'build-$(buildConfiguration)'

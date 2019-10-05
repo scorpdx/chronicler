@@ -14,7 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Chronicler\Chronicler.csproj" />
+    <ProjectReference Include="..\..\src\Chronicler\Chronicler.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="resources\Ironman_West_Francia_HaR.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

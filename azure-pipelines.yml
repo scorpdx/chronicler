@@ -22,7 +22,7 @@ steps:
   inputs:
     command: build
     projects: 'src/**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+    arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/out'
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
@@ -30,6 +30,18 @@ steps:
     projects: 'test/**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --logger trx'
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish out/ Artifacts'
   inputs:
-    pathtoPublish: $(Build.ArtifactStagingDirectory)
-    ArtifactName: 'build-$(buildConfiguration)'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/out'
+    ArtifactName: 'out-$(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: Pack
+  inputs:
+    command: pack
+    projects: 'src/**/*.csproj'
+    arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/pkg --include-symbols --include-source'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish pkg/ Artifacts'
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/pkg'
+    ArtifactName: 'pkg-$(buildConfiguration)'

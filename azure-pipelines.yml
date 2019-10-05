@@ -38,8 +38,11 @@ steps:
   displayName: Pack
   inputs:
     command: pack
+    includesource: true
+    includesymbols: true
+    nobuild: true
     projects: 'src/**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/pkg --include-symbols --include-source'
+    packDirectory: '$(Build.ArtifactStagingDirectory)/pkg'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish pkg/ Artifacts'
   inputs:

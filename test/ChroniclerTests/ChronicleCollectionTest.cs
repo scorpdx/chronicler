@@ -14,8 +14,8 @@ namespace ChroniclerTests
         public void TestParseJson()
         {
             var chronicleCollection = Chronicler.ChronicleCollection.ParseJson(CK2Json);
-            Assert.False(string.IsNullOrEmpty(chronicleCollection.Chronicles[0].Chapters[0].Entries[0].Text));
-
+            Assert.NotNull(chronicleCollection);
+            Assert.NotEmpty(chronicleCollection.Chronicles);
             Assert.Collection(chronicleCollection.Chronicles[0].Chapters,
                 chap => Assert.NotEmpty(chap.Entries),
                 chap => Assert.NotEmpty(chap.Entries),
@@ -23,6 +23,7 @@ namespace ChroniclerTests
                 chap => Assert.NotEmpty(chap.Entries),
                 chap => Assert.NotEmpty(chap.Entries),
                 chap => Assert.NotEmpty(chap.Entries));
+            Assert.False(string.IsNullOrEmpty(chronicleCollection.Chronicles[0].Chapters[0].Entries[0].Text));
         }
     }
 }

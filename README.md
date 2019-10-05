@@ -1,6 +1,10 @@
 # chronicler
 Chronicle parsing library for Crusader Kings II
 
+|Builds|NuGet|.NET CLI|
+|------|----------|--------|
+|[![Build Status](https://dev.azure.com/scorpdx/chronicler/_apis/build/status/masterCI?branchName=master)](https://dev.azure.com/scorpdx/chronicler/_build/latest?definitionId=6&branchName=master)|[![nuget stable](https://img.shields.io/nuget/v/chronicler.svg?style=flat)](https://www.nuget.org/packages/chronicler)|`> dotnet add package chronicler`|
+
 ## How to use
 1. Convert a CK2 save to JSON, using a utility like [ck2json](https://github.com/scorpdx/ck2json)
 2. Load the JSON save using [JsonDocument](https://docs.microsoft.com/en-us/dotnet/api/system.text.json.jsondocument?view=netcore-3.0).Parse or .ParseAsync

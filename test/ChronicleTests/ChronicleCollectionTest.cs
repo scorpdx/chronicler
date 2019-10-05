@@ -5,7 +5,7 @@ using Xunit;
 
 namespace ChronicleTests
 {
-    public class ChronicleTest
+    public class ChronicleCollectionTest
     {
         private static JsonDocument GetCK2Json() => JsonDocument.Parse(File.ReadAllText(@"C:\Users\scorp\Desktop\ck2kok.json"));
 

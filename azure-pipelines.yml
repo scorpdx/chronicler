@@ -12,15 +12,17 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: DotNetCoreInstaller@0
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk >=3.x'
   inputs:
-    version: '3.0.100'
+    packageType: sdk
+    version: 3.x
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
     command: build
     projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
 - task: DotNetCoreCLI@2
   inputs:
     command: test
@@ -31,12 +33,6 @@ steps:
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
-- task: DotNetCoreCLI@2
-  displayName: Publish
-  inputs:
-    command: publish
-    projects: 'src/**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: $(Build.ArtifactStagingDirectory)

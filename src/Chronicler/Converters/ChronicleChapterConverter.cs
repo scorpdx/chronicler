@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Chronicler.Converters
 {
-    internal class ChronicleChapterConverter : JsonConverter<ChronicleChapter>
+    public class ChronicleChapterConverter : JsonConverter<ChronicleChapter>
     {
         public override ChronicleChapter Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

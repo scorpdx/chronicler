@@ -92,7 +92,6 @@ namespace Chronicler
                         entries.Add(entry);
                         break;
                     case JsonTokenType.PropertyName when reader.ValueTextEquals("year"):
-                        reader.
                         year = reader.GetInt32();
                         break;
                 }

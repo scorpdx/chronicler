@@ -55,6 +55,7 @@ namespace Chronicler
                         chapters.Add(chapter);
                         break;
                     case JsonTokenType.PropertyName when reader.ValueTextEquals("character"):
+                        reader.Read();
                         character = reader.GetInt32();
                         break;
                 }
@@ -92,6 +93,7 @@ namespace Chronicler
                         entries.Add(entry);
                         break;
                     case JsonTokenType.PropertyName when reader.ValueTextEquals("year"):
+                        reader.Read();
                         year = reader.GetInt32();
                         break;
                 }
@@ -115,7 +117,23 @@ namespace Chronicler
 
     public class ChronicleEntry
     {
+        [JsonPropertyName("text")]
         public string Text { get; set; }
+
+        [JsonPropertyName("picture")]
+        public string Picture { get; set; }
+
+        [JsonPropertyName("portrait")]
+        public int Portrait { get; set; }
+
+        [JsonPropertyName("portrait_culture")]
+        public string PortraitCulture { get; set; }
+
+        [JsonPropertyName("portrait_title_tier")]
+        public int PortraitTitleTier { get; set; }
+
+        [JsonPropertyName("portrait_government")]
+        public string PortraitGovernment { get; set; }
     }
 
     [JsonConverter(typeof(ChronicleChapterConverter))]
@@ -183,9 +201,7 @@ namespace Chronicler
                         })
                 });
 
-            var auto = JsonSerializer.Deserialize<ChronicleCollection>(chronicleCollection.ToString());
-
-            return new ChronicleCollection();
+            return JsonSerializer.Deserialize<ChronicleCollection>(chronicleCollection.ToString());
         }
     }
 }

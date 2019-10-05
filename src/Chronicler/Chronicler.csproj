@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <Authors>jzebedee</Authors>
+    <Description>Chronicle parsing library for Crusader Kings II</Description>
+    <PackageProjectUrl>https://github.com/scorpdx/chronicler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/scorpdx/chronicler</RepositoryUrl>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

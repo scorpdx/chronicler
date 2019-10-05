@@ -3,17 +3,17 @@ using System.IO;
 using System.Text.Json;
 using Xunit;
 
-namespace ChronicleTests
+namespace ChroniclerTests
 {
     public class ChronicleCollectionTest
     {
         private static JsonDocument GetCK2Json() => JsonDocument.Parse(File.ReadAllText(@"C:\Users\scorp\Desktop\ck2kok.json"));
 
         [Fact]
-        public void TestParse()
+        public void TestParseJson()
         {
-            var chronicle = Chronicler.ChronicleCollection.ParseJson(GetCK2Json());
-            Assert.NotNull(chronicle);
+            var chronicleCollection = Chronicler.ChronicleCollection.ParseJson(GetCK2Json());
+            Assert.False(string.IsNullOrEmpty(chronicleCollection.Chronicles[0].Chapters[0].Entries[0].Text));
         }
     }
 }

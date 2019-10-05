@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29319.158
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronicler", "Chronicler.csproj", "{21E7FB31-022C-4917-A69C-5B428A67187E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChronicleTests", "..\test\ChronicleTests\ChronicleTests.csproj", "{3577DBE9-BCF0-471A-9E74-FBFF1445D9C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChroniclerTests", "..\test\ChronicleTests\ChroniclerTests.csproj", "{3577DBE9-BCF0-471A-9E74-FBFF1445D9C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

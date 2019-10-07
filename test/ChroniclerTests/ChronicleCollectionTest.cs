@@ -1,3 +1,4 @@
+using Chronicler;
 using System.IO;
 using System.Text.Json;
 using Xunit;
@@ -14,6 +15,11 @@ namespace ChroniclerTests
         public void TestParseJson()
         {
             var chronicleCollection = Chronicler.ChronicleCollection.ParseJson(CK2Json);
+            VerifyJson(chronicleCollection);
+        }
+
+        private void VerifyJson(ChronicleCollection chronicleCollection)
+        {
             Assert.NotNull(chronicleCollection);
             Assert.NotEmpty(chronicleCollection.Chronicles);
             Assert.Collection(chronicleCollection.Chronicles[0].Chapters,

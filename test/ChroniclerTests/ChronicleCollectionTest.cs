@@ -1,6 +1,7 @@
 using Chronicler;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace ChroniclerTests
@@ -15,6 +16,13 @@ namespace ChroniclerTests
         public void TestParseJson()
         {
             var chronicleCollection = Chronicler.ChronicleCollection.ParseJson(CK2Json);
+            VerifyJson(chronicleCollection);
+        }
+
+        [Fact]
+        public async Task TestParseJsonAsync()
+        {
+            var chronicleCollection = await Chronicler.ChronicleCollection.ParseJsonAsync(CK2Json);
             VerifyJson(chronicleCollection);
         }
 

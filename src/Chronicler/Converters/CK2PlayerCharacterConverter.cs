@@ -19,9 +19,10 @@ namespace Chronicler.Converters
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName when reader.ValueTextEquals(pid):
-                        return JsonSerializer.Deserialize<CK2PlayerCharacter>(ref reader, options);
+                        reader.Read();
+                        return JsonSerializer.Deserialize<CK2PlayerCharacter>(ref reader); /* exclude options or we loop */
                     default:
-                        reader.Skip();
+                        reader.TrySkip();
                         break;
                 }
             }

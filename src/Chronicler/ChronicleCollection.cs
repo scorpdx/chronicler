@@ -30,63 +30,49 @@ namespace Chronicler
                 .GetProperty("character_player_data")
                 .GetProperty("chronicle_collection");
 
-            var chronicleElements = chronicleCollection
-                .EnumerateObject()
-                .Where(prop => prop.NameEquals("chronicle"))
-                .Select(prop => prop.Value);
+            //var chronicleElements = chronicleCollection
+            //    .EnumerateObject()
+            //    .Where(prop => prop.NameEquals("chronicle"))
+            //    .Select(prop => prop.Value);
 
-            var chronicles = chronicleElements
-                .Select(chronicle => new
-                {
-                    chronicle,
-                    chapters = chronicle.EnumerateObject()
-                        .Where(prop => prop.NameEquals("chronicle_chapter"))
-                        .Select(prop => prop.Value).Select(chapter => new
-                        {
-                            entries = chapter.EnumerateObject()
-                                .Where(prop => prop.NameEquals("chronicle_entry"))
-                                .Select(prop => prop.Value)
-                                .Select(entry => new
-                                {
-                                    entry,
-                                    text = entry.GetProperty("text").GetString(),
-                                    //pi
-                                }),
-                            year = chapter.GetProperty("year").GetInt32()
-                        })
-                });
+            //var chronicles = chronicleElements
+            //    .Select(chronicle => new
+            //    {
+            //        chronicle,
+            //        chapters = chronicle.EnumerateObject()
+            //            .Where(prop => prop.NameEquals("chronicle_chapter"))
+            //            .Select(prop => prop.Value).Select(chapter => new
+            //            {
+            //                entries = chapter.EnumerateObject()
+            //                    .Where(prop => prop.NameEquals("chronicle_entry"))
+            //                    .Select(prop => prop.Value)
+            //                    .Select(entry => new
+            //                    {
+            //                        entry,
+            //                        text = entry.GetProperty("text").GetString(),
+            //                        //pi
+            //                    }),
+            //                year = chapter.GetProperty("year").GetInt32()
+            //            })
+            //    });
 
             return new JsonElementSerializer(chronicleCollection).ToObject<ChronicleCollection>();
         }
 
         public static async Task<ChronicleCollection> ParseJsonAsync(Stream jsonStream)
         {
-            var sw1 = System.Diagnostics.Stopwatch.StartNew();
-            jsonStream.Seek(jsonStream.Length, SeekOrigin.Begin);
-            sw1.Stop();
-
+            CK2txt ck;
+            ck = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream);
             jsonStream.Seek(0, SeekOrigin.Begin);
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            var pp = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream);
-            sw.Stop();
-
-            var yyy = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream, new JsonSerializerOptions
-            {
-                MaxDepth = 2
-            });
-
 
             var ck2pcConverter = new CK2PlayerCharacterConverter();
-            ck2pcConverter.PlayerID = -1;
+            ck2pcConverter.PlayerID = ck.Player.ID;
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(ck2pcConverter);
 
-            var sw2 = System.Diagnostics.Stopwatch.StartNew();
-            var CK2txt = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream, options);
-            sw2.Stop();
-
-            throw new NotImplementedException();
+            ck = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream, options);
+            return ck.PlayerCharacter.PlayerCharacterData.ChronicleCollection;
         }
     }
 
@@ -94,6 +80,9 @@ namespace Chronicler
     {
         [JsonPropertyName("player")]
         public CK2Player Player { get; set; }
+
+        [JsonPropertyName("character")]
+        public CK2PlayerCharacter PlayerCharacter { get; set; }
     }
 
     internal class CK2Player

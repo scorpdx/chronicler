@@ -10,8 +10,26 @@ namespace Chronicler.Converters
         public override ChronicleCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var chronicles = new List<Chronicle>();
-            while (reader.Read())
+
+            switch (reader.TokenType)
             {
+                case JsonTokenType.None:
+                case JsonTokenType.PropertyName:
+                    if (!reader.Read())
+                    {
+                        throw new JsonException("expected token to parse");
+                    }
+                    break;
+            }
+
+            var startingDepth = reader.CurrentDepth;
+            do
+            {
+                if (!reader.Read())
+                {
+                    throw new JsonException("expected token to parse");
+                }
+
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName when reader.ValueTextEquals("chronicle"):
@@ -20,6 +38,7 @@ namespace Chronicler.Converters
                         break;
                 }
             }
+            while (reader.CurrentDepth > startingDepth);
 
             return new ChronicleCollection
             {

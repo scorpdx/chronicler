@@ -10,6 +10,7 @@ namespace ChroniclerTests
     {
         private static string CK2JsonPath => Path.Combine("resources", "Ironman_West_Francia_HaR.json");
 
+        private static Stream GetCK2JsonStream() => File.OpenRead(CK2JsonPath);
         private static readonly JsonDocument CK2Json = JsonDocument.Parse(File.ReadAllText(CK2JsonPath));
 
         [Fact]
@@ -22,7 +23,8 @@ namespace ChroniclerTests
         [Fact]
         public async Task TestParseJsonAsync()
         {
-            var chronicleCollection = await Chronicler.ChronicleCollection.ParseJsonAsync(CK2Json);
+            using var stream = GetCK2JsonStream();
+            var chronicleCollection = await Chronicler.ChronicleCollection.ParseJsonAsync(stream);
             VerifyJson(chronicleCollection);
         }
 

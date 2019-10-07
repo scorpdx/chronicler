@@ -61,37 +61,23 @@ namespace Chronicler
 
         public static async Task<ChronicleCollection> ParseJsonAsync(Stream jsonStream)
         {
-            static async ValueTask<int> ReadPIDFromHeaderAsync(Stream stream)
-            {
-                var headerChunk = System.Buffers.ArrayPool<byte>.Shared.Rent(0x200);
-
-                var bytesRead = await stream.ReadAsync(headerChunk, 0, headerChunk.Length);
-                if (bytesRead < headerChunk.Length)
-                    throw new InvalidOperationException("failed to read header");
-
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                var noOptions = JsonSerializer.Deserialize<CK2txt>(headerChunk);
-                sw.Stop();
-
-                System.Buffers.ArrayPool<byte>.Shared.Return(headerChunk);
-
-                return noOptions.Player.ID;
-            }
-
-            var xxx = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream, new JsonSerializerOptions
-            {
-                MaxDepth = 0
-            });
+            var sw1 = System.Diagnostics.Stopwatch.StartNew();
+            jsonStream.Seek(jsonStream.Length, SeekOrigin.Begin);
+            sw1.Stop();
 
             jsonStream.Seek(0, SeekOrigin.Begin);
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var pp = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream);
+            sw.Stop();
+
             var yyy = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream, new JsonSerializerOptions
             {
-                MaxDepth = 1
+                MaxDepth = 2
             });
 
 
             var ck2pcConverter = new CK2PlayerCharacterConverter();
-            ck2pcConverter.PlayerID = await ReadPIDFromHeaderAsync(jsonStream);
+            ck2pcConverter.PlayerID = -1;
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(ck2pcConverter);
@@ -108,9 +94,6 @@ namespace Chronicler
     {
         [JsonPropertyName("player")]
         public CK2Player Player { get; set; }
-
-        [JsonPropertyName("character")]
-        public CK2PlayerCharacter PlayerCharacter { get; set; }
     }
 
     internal class CK2Player

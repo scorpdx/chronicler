@@ -11,6 +11,8 @@ namespace Chronicler.Converters.Internal
 
         public override CK2PlayerCharacter Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            static void ThrowMissingTokenException() => throw new JsonException("expected token to parse");
+
             if (PlayerID == null)
                 throw new ArgumentNullException(nameof(PlayerID));
 
@@ -19,9 +21,7 @@ namespace Chronicler.Converters.Internal
                 case JsonTokenType.None:
                 case JsonTokenType.PropertyName:
                     if (!reader.Read())
-                    {
-                        throw new JsonException("expected token to parse");
-                    }
+                        ThrowMissingTokenException();
                     break;
             }
 
@@ -31,22 +31,16 @@ namespace Chronicler.Converters.Internal
             do
             {
                 if (!reader.Read())
-                {
-                    throw new JsonException("expected token to parse");
-                }
+                    ThrowMissingTokenException();
                 else if (result == null)
                 {
                     switch (reader.TokenType)
                     {
                         case JsonTokenType.PropertyName when reader.ValueTextEquals(pid):
                             if (!reader.Read())
-                            {
-                                throw new JsonException("expected token to parse");
-                            }
+                                ThrowMissingTokenException();
+
                             result = JsonSerializer.Deserialize<CK2PlayerCharacter>(ref reader); /* exclude options or we loop */
-                            break;
-                        default:
-                            reader.TrySkip();
                             break;
                     }
                 }

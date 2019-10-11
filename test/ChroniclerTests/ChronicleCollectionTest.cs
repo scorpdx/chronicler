@@ -56,6 +56,12 @@ namespace ChroniclerTests
                 chap => Assert.NotEmpty(chap.Entries),
                 chap => Assert.NotEmpty(chap.Entries));
             Assert.False(string.IsNullOrEmpty(chronicleCollection.Chronicles[0].Chapters[0].Entries[0].Text));
+
+            const int expectedCharacterId = 6392;
+            Assert.Equal(expectedCharacterId, chronicleCollection.Chronicles[0].Character);
+
+            const int expectedFirstYear = 769;
+            Assert.Equal(expectedFirstYear, chronicleCollection.Chronicles[0].Chapters[0].Year);
         }
     }
 }

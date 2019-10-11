@@ -11,20 +11,36 @@ namespace ChroniclerTests
         private static string CK2JsonPath => Path.Combine("resources", "Ironman_West_Francia_HaR.json");
 
         private static Stream GetCK2JsonStream() => File.OpenRead(CK2JsonPath);
-        private static readonly JsonDocument CK2Json = JsonDocument.Parse(File.ReadAllText(CK2JsonPath));
+        private static readonly string CK2JsonText = File.ReadAllText(CK2JsonPath);
+        private static readonly JsonDocument CK2Json = JsonDocument.Parse(CK2JsonText);
 
         [Fact]
-        public void TestParseJson()
+        public void TestParseJsonDoc()
         {
-            var chronicleCollection = Chronicler.ChronicleCollection.ParseJson(CK2Json);
+            var chronicleCollection = Chronicler.ChronicleCollection.Parse(CK2Json);
             VerifyJson(chronicleCollection);
         }
 
         [Fact]
-        public async Task TestParseJsonAsync()
+        public void TestParseJsonText()
+        {
+            var chronicleCollection = Chronicler.ChronicleCollection.Parse(CK2JsonText);
+            VerifyJson(chronicleCollection);
+        }
+
+        [Fact]
+        public void TestParse()
         {
             using var stream = GetCK2JsonStream();
-            var chronicleCollection = await Chronicler.ChronicleCollection.ParseJsonAsync(stream);
+            var chronicleCollection = Chronicler.ChronicleCollection.Parse(stream);
+            VerifyJson(chronicleCollection);
+        }
+
+        [Fact]
+        public async Task TestParseAsync()
+        {
+            using var stream = GetCK2JsonStream();
+            var chronicleCollection = await Chronicler.ChronicleCollection.ParseAsync(stream);
             VerifyJson(chronicleCollection);
         }
 

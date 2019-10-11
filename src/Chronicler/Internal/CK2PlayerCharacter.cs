@@ -5,6 +5,6 @@ namespace Chronicler.Internal
     internal class CK2PlayerCharacter
     {
         [JsonPropertyName("character_player_data")]
-        public PlayerCharacterData PlayerCharacterData { get; set; }
+        public CK2PlayerCharacterData PlayerCharacterData { get; set; }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using Chronicler.Converters;
-using Chronicler.Converters.Internal;
-using Chronicler.Internal;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -16,14 +13,14 @@ namespace Chronicler
         [JsonPropertyName("chronicle")]
         public List<Chronicle> Chronicles { get; set; }
 
-        public static ChronicleCollection ParseJson(JsonDocument ck2json)
+        public static ChronicleCollection Parse(JsonDocument jsonDoc)
         {
-            var playerId = ck2json.RootElement
+            var playerId = jsonDoc.RootElement
                 .GetProperty("player")
                 .GetProperty("id")
                 .GetRawText();
 
-            var playerCharacterElement = ck2json.RootElement
+            var playerCharacterElement = jsonDoc.RootElement
                 .GetProperty("character")
                 .GetProperty(playerId);
 
@@ -34,53 +31,16 @@ namespace Chronicler
             return new JsonElementSerializer(chronicleCollection).ToObject<ChronicleCollection>();
         }
 
-        public static async Task<ChronicleCollection> ParseJsonAsync(Stream jsonStream)
+        public static ChronicleCollection Parse(Stream jsonStream)
         {
-            static int ReadPIDFromHeader(ReadOnlySpan<byte> headerChunk)
-            {
-                var reader = new Utf8JsonReader(headerChunk);
-
-                while (reader.Read())
-                {
-                    switch (reader.TokenType)
-                    {
-                        case JsonTokenType.PropertyName when reader.ValueTextEquals("id"):
-                            if (reader.Read())
-                            {
-                                return reader.GetInt32();
-                            }
-                            goto fail;
-                    }
-                }
-
-            fail:
-                throw new JsonException("couldn't find player ID");
-            }
-
-            int pid;
-            {
-                var headerChunk = System.Buffers.ArrayPool<byte>.Shared.Rent(0x200);
-
-                var bytesRead = await jsonStream.ReadAsync(headerChunk, 0, headerChunk.Length);
-                if (bytesRead < headerChunk.Length)
-                    throw new InvalidOperationException("failed to read header");
-
-                pid = ReadPIDFromHeader(headerChunk);
-
-                System.Buffers.ArrayPool<byte>.Shared.Return(headerChunk);
-            }
-            jsonStream.Seek(0, SeekOrigin.Begin);
-
-            var ck2pcConverter = new CK2PlayerCharacterConverter
-            {
-                PlayerID = pid
-            };
-
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(ck2pcConverter);
-
-            var ck = await JsonSerializer.DeserializeAsync<CK2txt>(jsonStream, options);
-            return ck.PlayerCharacter.PlayerCharacterData.ChronicleCollection;
+            using var reader = new StreamReader(jsonStream);
+            return Parse(reader.ReadToEnd());
         }
+
+        public static ChronicleCollection Parse(string jsonText)
+            => JsonSerializer.Deserialize<ChronicleCollection>(jsonText);
+
+        public static ValueTask<ChronicleCollection> ParseAsync(Stream jsonStream)
+            => JsonSerializer.DeserializeAsync<ChronicleCollection>(jsonStream);
     }
 }
